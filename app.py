@@ -86,6 +86,44 @@ def temperature():
     return jsonify(all_temperature)
 
 
+ # Calculate `TMIN`, `TAVG`, and `TMAX` for all dates greater than and equal to the start date
+@app.route("/api/v1.0/<start>")
+def single_date(start):
+    session = Session(engine)
+    Start_Date = dt.datetime.strptime(start,"%Y-%m-%d")
+
+    result_stats = session.query(func.min(Measurement.tobs),func.max(Measurement.tobs),func.round(func.avg(Measurement.tobs))).\
+    filter(Measurement.date >= Start_Date).all()
+	# Close the Query
+    session.close() 
+	
+    result = list(np.ravel(result_stats))
+
+	# Jsonify summary
+    return jsonify(result)
+
+
+
+#Return a JSON list of the minimum temperature, the average temperature, and the maximum temperature for a given start
+
+@app.route("/api/v1.0/<start>/<end>")
+def trip_dates(start,end):
+    session = Session(engine)
+	Start_Date = dt.datetime.strptime(start,"%Y-%m-%d")
+	End_Date = dt.datetime.strptime(end,"%Y-%m-%d")
+
+	result_stats = session.query(func.min(Measurement.tobs),func.max(Measurement.tobs),func.round(func.avg(Measurement.tobs))).\
+	filter(Measurement.date.between(Start_Date,End_Date)).all()
+	# Close the Query
+	session.close()    
+	
+	result = list(np.ravel(result_stats))
+
+	# Jsonify summary
+	return jsonify(result)
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
