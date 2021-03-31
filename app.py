@@ -52,14 +52,14 @@ def precipitation():
     session.close()
     
     # Create a dictionary
-    precipitation_date_tobs = []
+    precipitation_results = []
     for each_row in results:
         dt_dict = {}
         dt_dict["date"] = each_row.date
         dt_dict["tobs"] = each_row.tobs
-        precipitation_date_tobs.append(dt_dict)
+        precipitation_results.append(dt_dict)
 
-    return jsonify(precipitation_date_tobs)
+    return jsonify(precipitation_results)
 
 #Return a JSON list of stations from the dataset
 @app.route("/api/v1.0/station")
@@ -69,8 +69,8 @@ def stations():
 	# Close the Query
     session.close()
 	
-    all_station = list(np.ravel(results))
-    return jsonify(all_station)
+    station_list = list(np.ravel(results))
+    return jsonify(station_list)
 
 # Query the dates and temperature observations of the most active station for the last year of data
 @app.route("/api/v1.0/tobs")
@@ -82,8 +82,8 @@ def temperature():
     session.close()
 
 	# Convert list of tuples into normal list
-    temperature_list = list(np.ravel(temperature_results))
-    return jsonify(temperature_list)
+    all_temperature = list(np.ravel(temperature_results))
+    return jsonify(all_temperature)
 
 
 
