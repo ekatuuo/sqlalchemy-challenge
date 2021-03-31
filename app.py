@@ -72,8 +72,18 @@ def stations():
     all_station = list(np.ravel(results))
     return jsonify(all_station)
 
+# Query the dates and temperature observations of the most active station for the last year of data
+@app.route("/api/v1.0/tobs")
+def temperature():
+    session = Session(engine)
+    Last_Year = dt.date(2017, 8, 23) - dt.timedelta(days=365)
+    temperature_results = session.query(Measurement.tobs).filter(Measurement.date > Last_Year).all()
+	# Close the Query
+    session.close()
 
-
+	# Convert list of tuples into normal list
+    temperature_list = list(np.ravel(temperature_results))
+    return jsonify(temperature_list)
 
 
 
